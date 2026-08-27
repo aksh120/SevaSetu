@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-ink: 22 33 31;
+    --color-bridge: 20 70 77;
+    --color-bridge-light: 29 95 104;
+    --color-bridge-dark: 13 50 55;
+    --color-paper: 245 246 244;
+    --color-mist: 220 227 224;
+    --color-surface: 255 255 255;
+    --color-surface-raised: 255 255 255;
+    --color-surface-subtle: 251 252 250;
+    --color-marigold-deep: 150 105 15;
+    --color-error-bg: 254 228 226;
+    --color-error: 180 35 24;
+    --color-success-bg: 220 250 230;
+    --color-success: 6 118 71;
+    --color-warning-bg: 254 240 199;
+    --color-warning: 181 71 8;
+    --color-info-bg: 209 233 255;
+    --color-info: 23 92 211;
+    color-scheme: light;
+  }
+
+  :root[data-theme="dark"] {
+    --color-ink: 232 238 235;
+    --color-bridge: 25 83 91;
+    --color-bridge-light: 41 112 120;
+    --color-bridge-dark: 9 31 35;
+    --color-paper: 15 25 24;
+    --color-mist: 68 91 87;
+    --color-surface: 25 40 37;
+    --color-surface-raised: 31 49 45;
+    --color-surface-subtle: 20 34 32;
+    --color-marigold-deep: 245 190 77;
+    --color-error-bg: 84 30 30;
+    --color-error: 255 155 146;
+    --color-success-bg: 18 68 49;
+    --color-success: 104 225 163;
+    --color-warning-bg: 82 54 20;
+    --color-warning: 255 195 94;
+    --color-info-bg: 25 51 92;
+    --color-info: 140 190 255;
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-ink antialiased;
+  }
+
+  ::selection {
+    background-color: #c1861f;
+    color: #16211f;
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.015em;
+  }
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    accent-color: #c1861f;
+  }
+
+  a,
+  button,
+  label,
+  input,
+  textarea {
+    transition-property: color, background-color, border-color, box-shadow, opacity;
+    transition-duration: 150ms;
+    transition-timing-function: ease;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-marigold ring-offset-2 ring-offset-paper;
+  }
+
+  [data-theme="dark"] .bg-white {
+    background-color: rgb(var(--color-surface) / 1);
+  }
+
+  [data-theme="dark"] .bg-\[\#fbfcfa\],
+  [data-theme="dark"] .bg-\[\#fbfcfb\] {
+    background-color: rgb(var(--color-surface-subtle) / 1);
+  }
+
+  [data-theme="dark"] .bg-\[\#fffdf7\] {
+    background-color: rgb(60 48 27 / 1);
+  }
+
+  [data-theme="dark"] .text-white {
+    color: #f5f6f4;
+  }
+
+  [data-theme="dark"] .text-ink\/45 {
+    color: rgb(205 219 214 / 0.68);
+  }
+
+  [data-theme="dark"] .text-ink\/50,
+  [data-theme="dark"] .text-ink\/55,
+  [data-theme="dark"] .text-ink\/60 {
+    color: rgb(205 219 214 / 0.76);
+  }
+
+  [data-theme="dark"] .text-ink\/70,
+  [data-theme="dark"] .text-ink\/75,
+  [data-theme="dark"] .text-ink\/80 {
+    color: rgb(232 238 235 / 0.88);
+  }
+
+  [data-theme="dark"] .text-ink\/35,
+  [data-theme="dark"] .text-ink\/40 {
+    color: rgb(205 219 214 / 0.54);
+  }
+
+  [data-theme="dark"] .text-bridge,
+  [data-theme="dark"] .group-hover\:text-bridge-light:hover {
+    color: #65c4cf;
+  }
+
+  [data-theme="dark"] .text-marigold-deep {
+    color: #f5be4d;
+  }
+
+  [data-theme="dark"] .border-white\/30 {
+    border-color: rgb(255 255 255 / 0.34);
+  }
+
+  [data-theme="dark"] .border-bridge {
+    border-color: #65c4cf;
+  }
+
+  [data-theme="dark"] .hover\:bg-bridge:hover,
+  [data-theme="dark"] .enabled\:hover\:bg-bridge:hover:enabled {
+    background-color: rgb(var(--color-bridge-light) / 1);
+  }
+
+  [data-theme="dark"] input,
+  [data-theme="dark"] textarea,
+  [data-theme="dark"] select {
+    caret-color: rgb(var(--color-ink));
+  }
+
+  [data-theme="dark"] input::placeholder,
+  [data-theme="dark"] textarea::placeholder {
+    color: rgb(205 219 214 / 0.58);
+  }
+
+  [data-theme="dark"] .shadow-\[0_2px_0_0_\#dce3e0\] {
+    box-shadow: 0 2px 0 0 rgb(7 19 18 / 0.8);
+  }
+
+  [data-theme="dark"] .shadow-\[0_12px_32px_rgba\(22\2c 33\2c 31\2c 0\.06\)\] {
+    box-shadow: 0 12px 32px rgb(0 0 0 / 0.22);
+  }
+
+  [data-theme="dark"] .bg-status-success-bg {
+    background-color: rgb(22 101 52 / 0.35);
+  }
+
+  [data-theme="dark"] .bg-status-warning-bg {
+    background-color: rgb(146 64 14 / 0.38);
+  }
+
+  [data-theme="dark"] .bg-status-error-bg {
+    background-color: rgb(153 27 27 / 0.38);
+  }
+
+  [data-theme="dark"] .bg-status-info-bg {
+    background-color: rgb(30 64 175 / 0.38);
+  }
+}
+
+@media print {
+  body {
+    background: white;
+    color: #16211f;
+  }
+}
