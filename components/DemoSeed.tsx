@@ -2,11 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useProfile } from "@/components/ProfileProvider";
+import { useAuth } from "@/components/AuthProvider";
 import { useCopy } from "@/components/LanguageProvider";
 import type { IntakeAnswers } from "@/lib/types";
 
 const DEMO_ANSWERS: IntakeAnswers = {
-  orgName: "Prakash Foundation",
+  orgName: "Afora Foundation",
   structureStatus: "trust",
   funding: ["individual", "foreign"],
   orgAge: "starting",
@@ -15,10 +16,16 @@ const DEMO_ANSWERS: IntakeAnswers = {
 export default function DemoSeed() {
   const router = useRouter();
   const { seedDemo } = useProfile();
+  const { login } = useAuth();
   const t = useCopy();
 
   const start = () => {
     const now = Date.now();
+    login({
+      id: "98765-43210",
+      name: "Demo Trustee",
+      role: "Managing Trustee / President",
+    });
     seedDemo(DEMO_ANSWERS, {
       structure: now - 60_000,
       pan: now - 60_000,

@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import BridgeProgress from "@/components/BridgeProgress";
 import StatusBadge from "@/components/StatusBadge";
 import MockedBadge from "@/components/MockedBadge";
+import ProBonoCANetwork from "@/components/ProBonoCANetwork";
 import { useProfile } from "@/components/ProfileProvider";
+import { useRequireAuth } from "@/components/AuthProvider";
 import { useCopy, useLang } from "@/components/LanguageProvider";
 import { stepDisplay } from "@/lib/content";
 import { refFor, todayLabel } from "@/lib/doc";
@@ -13,10 +15,19 @@ import { fmt } from "@/lib/i18n";
 import { progressOf } from "@/lib/progress";
 
 export default function DashboardPage() {
+  const { isAuthenticated, isReady } = useRequireAuth();
   const { profile, resetProfile } = useProfile();
   const router = useRouter();
   const t = useCopy();
   const { lang } = useLang();
+
+  if (!isReady || !isAuthenticated) {
+    return (
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-center p-20 font-mono text-sm text-ink/60">
+        Redirecting to SSO login…
+      </div>
+    );
+  }
 
   if (!profile) {
     return (
@@ -51,14 +62,20 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-6 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+              <h1 className="text-2xl font-bold tracking-tight text-ink break-words sm:text-4xl">
                 {fmt(t.dashboard.title, { org: answers.orgName })}
               </h1>
               <MockedBadge label={t.badges.simulatedStatuses} />
+              {profile.caReview && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-status-success/40 bg-status-success-bg px-2.5 py-0.5 font-mono text-xs font-bold text-status-success">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#22c55e] animate-pulse" />
+                  <span>{profile.caReview.ref} • CA Review In Progress</span>
+                </span>
+              )}
             </div>
             <p className="mt-2 text-base text-ink/75">{t.dashboard.reviewNote}</p>
           </div>
-          <div className="grid shrink-0 grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-4 lg:grid-cols-2 lg:border-l lg:border-mist lg:pl-8 xl:grid-cols-4">
+          <div className="grid shrink-0 grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4 sm:gap-x-8 lg:grid-cols-2 lg:border-l lg:border-mist lg:pl-8 xl:grid-cols-4">
             {(
               [
                 [t.doc.preparedFor, answers.orgName, false],
@@ -198,6 +215,9 @@ export default function DashboardPage() {
           })}
         </ol>
       </section>
+
+      {/* Verified Pro-Bono CA Network Interactive Card */}
+      <ProBonoCANetwork variant="card" className="mt-8" />
 
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         <section className="rounded-lg border border-mist border-t-2 border-t-bridge bg-white p-5">

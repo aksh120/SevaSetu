@@ -11,7 +11,7 @@ import {
 import { getCopy } from "@/lib/i18n";
 import type { Copy, Lang } from "@/lib/i18n";
 
-const LANG_KEY = "setuseva-lang";
+const LANG_KEY = "sevasetu-lang";
 
 let currentLang: Lang = "en";
 const listeners = new Set<() => void>();

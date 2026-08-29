@@ -37,7 +37,7 @@ export default function BridgeProgress({
     return "todo";
   };
   const spanColor = (a: number, b: number) =>
-    stateOf(a) === "complete" && stateOf(b) === "complete" ? TOKENS.bridge : TOKENS.muted;
+    stateOf(a) === "complete" && stateOf(b) === "complete" ? TOKENS.bridge : TOKENS.ink;
   const sag = (deckY - towerTop) * 0.62;
   const cableY = (t: number) => {
     const y0 = towerTop;
@@ -52,20 +52,38 @@ export default function BridgeProgress({
     const x2 = towerX(i + 1);
     const mid = (x1 + x2) / 2;
     const color = spanColor(i, i + 1);
+    const isCompletedSpan = color === TOKENS.bridge;
     spans.push(
-      <path key={`cable-${i}`} d={`M ${x1} ${towerTop} Q ${mid} ${towerTop + sag} ${x2} ${towerTop}`} stroke={color} strokeWidth={compact ? 2 : 2.6} fill="none" strokeLinecap="round" />
+      <path
+        key={`cable-${i}`}
+        d={`M ${x1} ${towerTop} Q ${mid} ${towerTop + sag} ${x2} ${towerTop}`}
+        stroke={color}
+        strokeWidth={compact ? 2 : 2.6}
+        strokeOpacity={isCompletedSpan ? 1 : 0.85}
+        fill="none"
+        strokeLinecap="round"
+      />
     );
     hangerTs.forEach((t, j) => {
       const hx = x1 + (x2 - x1) * t;
       spans.push(
-        <line key={`h-${i}-${j}`} x1={hx} y1={cableY(t)} x2={hx} y2={deckY} stroke={color} strokeWidth={compact ? 0.8 : 1} opacity={0.68} />
+        <line
+          key={`h-${i}-${j}`}
+          x1={hx}
+          y1={cableY(t)}
+          x2={hx}
+          y2={deckY}
+          stroke={color}
+          strokeWidth={compact ? 1 : 1.3}
+          strokeOpacity={isCompletedSpan ? 0.9 : 0.8}
+        />
       );
     });
   }
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Roadmap progress: ${completed} of ${total} steps complete`} className="w-full" preserveAspectRatio="xMidYMid meet">
-      <line x1={6} y1={deckY + deckH + (compact ? 8 : 13)} x2={W - 6} y2={deckY + deckH + (compact ? 8 : 13)} stroke={TOKENS.muted} strokeOpacity={0.5} strokeWidth={1.5} strokeDasharray="2 6" />
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Roadmap progress: ${completed} of ${total} steps complete`} className="w-full max-w-full h-auto block overflow-hidden shrink min-w-0" preserveAspectRatio="xMidYMid meet">
+      <line x1={6} y1={deckY + deckH + (compact ? 8 : 13)} x2={W - 6} y2={deckY + deckH + (compact ? 8 : 13)} stroke={TOKENS.ink} strokeOpacity={0.25} strokeWidth={1.5} strokeDasharray="2 6" />
       {spans}
       <rect x={2} y={deckY} width={W - 4} height={deckH} rx={3} fill={TOKENS.bridge} />
       <rect x={0} y={deckY - (compact ? 7 : 10)} width={compact ? 12 : 18} height={(compact ? 7 : 10) + deckH} rx={3} fill={TOKENS.ink} opacity={0.72} />
@@ -74,13 +92,13 @@ export default function BridgeProgress({
         const x = towerX(i);
         const state = stateOf(i);
         const fill = state === "complete" ? TOKENS.bridge : state === "current" ? TOKENS.marigold : TOKENS.paper;
-        const stroke = state === "todo" ? TOKENS.muted : fill;
+        const stroke = state === "todo" ? TOKENS.ink : fill;
         return (
           <g key={`tower-${i}`}>
             {state === "current" && <circle cx={x} cy={towerTop + 4} r={compact ? 10 : 14} fill={TOKENS.marigold} opacity={0.16} />}
-            <path d={`M ${x - hw} ${deckY + 4} L ${x - hw * 0.6} ${towerTop} L ${x + hw * 0.6} ${towerTop} L ${x + hw} ${deckY + 4} Z`} fill={fill} stroke={stroke} strokeWidth={state === "todo" ? 1.5 : 0} />
-            {!compact && <line x1={x - hw - 3} y1={towerTop + 9} x2={x + hw + 3} y2={towerTop + 9} stroke={stroke} strokeWidth={2} strokeLinecap="round" />}
-            <circle cx={x} cy={deckY + deckH + (compact ? 8 : 13)} r={compact ? 2.5 : 3.5} fill={state === "todo" ? TOKENS.muted : state === "current" ? TOKENS.marigold : TOKENS.bridge} />
+            <path d={`M ${x - hw} ${deckY + 4} L ${x - hw * 0.6} ${towerTop} L ${x + hw * 0.6} ${towerTop} L ${x + hw} ${deckY + 4} Z`} fill={fill} stroke={stroke} strokeWidth={state === "todo" ? 1.5 : 0} strokeOpacity={state === "todo" ? 0.85 : 1} />
+            {!compact && <line x1={x - hw - 3} y1={towerTop + 9} x2={x + hw + 3} y2={towerTop + 9} stroke={stroke} strokeWidth={2} strokeLinecap="round" strokeOpacity={state === "todo" ? 0.85 : 1} />}
+            <circle cx={x} cy={deckY + deckH + (compact ? 8 : 13)} r={compact ? 2.5 : 3.5} fill={state === "todo" ? TOKENS.ink : state === "current" ? TOKENS.marigold : TOKENS.bridge} fillOpacity={state === "todo" ? 0.4 : 1} />
           </g>
         );
       })}

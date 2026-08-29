@@ -4,7 +4,9 @@ import Link from "next/link";
 import BridgeProgress from "@/components/BridgeProgress";
 import StatusBadge from "@/components/StatusBadge";
 import MockedBadge from "@/components/MockedBadge";
+import ProBonoCANetwork from "@/components/ProBonoCANetwork";
 import { useProfile } from "@/components/ProfileProvider";
+import { useRequireAuth } from "@/components/AuthProvider";
 import { useCopy, useLang } from "@/components/LanguageProvider";
 import { REGISTRATIONS, stepDisplay } from "@/lib/content";
 import { refFor, todayLabel } from "@/lib/doc";
@@ -36,9 +38,18 @@ function StepMarker({
 }
 
 export default function RoadmapPage() {
+  const { isAuthenticated, isReady } = useRequireAuth();
   const { profile } = useProfile();
   const t = useCopy();
   const { lang } = useLang();
+
+  if (!isReady || !isAuthenticated) {
+    return (
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-center p-20 font-mono text-sm text-ink/60">
+        Redirecting to SSO login…
+      </div>
+    );
+  }
 
   if (!profile) {
     return (
@@ -88,7 +99,7 @@ export default function RoadmapPage() {
         <div className="flex flex-col gap-6 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+              <h1 className="text-2xl font-bold tracking-tight text-ink break-words sm:text-4xl">
                 {t.roadmap.title}
               </h1>
               <MockedBadge label={t.badges.simulatedStatuses} />
@@ -97,7 +108,7 @@ export default function RoadmapPage() {
               {fmt(t.roadmap.subhead, { org: answers.orgName })}
             </p>
           </div>
-          <div className="grid shrink-0 grid-cols-2 gap-x-8 gap-y-3 border-mist sm:grid-cols-4 lg:grid-cols-2 lg:border-l lg:pl-8 xl:grid-cols-4">
+          <div className="grid shrink-0 grid-cols-2 gap-x-4 gap-y-3 border-mist sm:grid-cols-4 sm:gap-x-8 lg:grid-cols-2 lg:border-l lg:pl-8 xl:grid-cols-4">
             {metaCell(t.doc.preparedFor, answers.orgName)}
             {metaCell(t.doc.refLabel, refFor(answers.orgName))}
             {metaCell(t.doc.generatedLabel, todayLabel(lang), true)}
@@ -192,6 +203,9 @@ export default function RoadmapPage() {
               );
             })}
           </ol>
+
+          {/* Verified Pro-Bono CA Network Interactive Card */}
+          <ProBonoCANetwork variant="card" className="mt-8" />
         </div>
 
         <aside className="space-y-4 xl:sticky xl:top-6 xl:self-start">

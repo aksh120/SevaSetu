@@ -32,9 +32,19 @@ export interface Roadmap {
   callouts: RoadmapCallout[];
 }
 
+export interface CaReviewSubmission {
+  ref: string;
+  firmId: "firm1" | "firm2" | "firm3";
+  firmName: string;
+  submittedAt: number;
+  status: "queued" | "under-review" | "approved";
+  digest: string;
+}
+
 export interface NgoProfile {
   answers: IntakeAnswers;
   roadmap: Roadmap;
   uploads: Record<string, boolean[]>;
   submittedAt: Record<string, number>;
+  caReview?: CaReviewSubmission | null;
 }

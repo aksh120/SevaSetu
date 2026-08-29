@@ -1,6 +1,6 @@
 import { chromium, devices } from "playwright";
 
-const SHOTS = process.env.SHOTS_DIR ?? "C:\\Users\\User\\AppData\\Local\\Temp\\opencode\\setuseva-shots";
+const SHOTS = process.env.SHOTS_DIR ?? "C:\\Users\\User\\AppData\\Local\\Temp\\opencode\\sevasetu-shots";
 const BASE = process.env.BASE_URL ?? "http://localhost:3111";
 
 async function main() {

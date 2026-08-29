@@ -9,7 +9,7 @@
 [![WCAG AA](https://img.shields.io/badge/Accessibility-WCAG_AA-success?style=flat)](#accessibility--inclusive-design)
 [![Bilingual](https://img.shields.io/badge/Language-English_%7C_%E0%A4%B9%E0%A4%BF%E0%A4%A8%E0%A5%8D%E0%A4%A6%E0%A5%80-orange?style=flat)](#-bilingual-support-english--%E0%A4%B9%E0%A4%BF%E0%A4%A8%E0%A5%8D%E0%A4%A6%E0%A5%80)
 
-> **Live Application**: [https://setuseva.vercel.app](https://setuseva.vercel.app)  
+> **Live Application**: [https://sevasetu.vercel.app](https://sevasetu.vercel.app)  
 > *Built for the **Build What Moves India** Hackathon (Varun Mayya × OpenAI)*
 
 ---
@@ -79,10 +79,11 @@ flowchart LR
   - `FCRA (MHA)` is dynamically appended if foreign funding is selected.
 - **Radical Honesty Callouts**: If a new NGO (under 3 years old) selects foreign funding, SevaSetu does not silently present a dead end. It displays an explicit advisory callout explaining track-record realities and alternative mechanisms like *Prior Permission*.
 
-### 2. Interactive Guided Filing Modules
+### 2. Interactive Guided Filing Modules & Mock DigiLocker Integration
 - Data-driven module template rendering all 7 Indian registration specifications.
 - **Plain-English Explanations**: "What it is", "Why you need it", and "What happens after submitting".
 - **Interactive Checklist**: Mock document upload verification system.
+- **Interactive Mock DigiLocker Demo**: One-click "Pull from DigiLocker (Demo)" workflow demonstrating the future scaling vision with 1-click credential filling, verified certificate repository (Trust Deed, PAN, Aadhaar, NOC, Audit Statements), and instant checklist synchronization.
 - **Strict Submission Gate**: "Submit for review" is disabled with contextual guidance until all required prerequisites are prepared.
 
 ### 3. Real-Time Dashboard & Simulated Approvals
@@ -219,7 +220,7 @@ The Notice Translator (`app/api/translate/route.ts`) is **provider-agnostic** an
   3. `Primary Model` in Plain Text Mode + Regex JSON Extractor
   4. `Fallback Model` in Plain Text Mode + Regex JSON Extractor
 
-*(See [`docs/ai-provider.md`](file:///c:/Users/User/Documents/GitHub/SetuSeva/docs/ai-provider.md) for full provider privacy analysis).*
+*(See [`docs/ai-provider.md`](file:///c:/Users/User/Documents/GitHub/SevaSetu/docs/ai-provider.md) for full provider privacy analysis).*
 
 ---
 

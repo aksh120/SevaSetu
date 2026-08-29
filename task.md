@@ -8,7 +8,7 @@ Gates: each phase ends with a pause + summary checkpoint before starting the nex
 - [x] Verify WCAG AA contrast on all token text pairings; adjust shades if needed
 - [x] Shared layout shell: header w/ wordmark, footer w/ mandatory disclosure line
 - [x] Deploy placeholder to Vercel; confirm public URL opens with zero login
-- **Done when:** live Vercel URL exists and reflects SevaSetu design tokens. ✅ Live: https://setuseva.vercel.app
+- **Done when:** live Vercel URL exists and reflects SevaSetu design tokens. ✅ Live: https://sevasetu.vercel.app
 
 ## Phase 1  -  Intake & roadmap engine
 - [x] Intake screen  -  all 4 fields exactly per wireframe copy (org name, structure status,

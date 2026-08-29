@@ -11,7 +11,7 @@ import {
 
 type Theme = "light" | "dark";
 
-const THEME_KEY = "setuseva-theme";
+const THEME_KEY = "sevasetu-theme";
 let currentTheme: Theme = "light";
 const listeners = new Set<() => void>();
 

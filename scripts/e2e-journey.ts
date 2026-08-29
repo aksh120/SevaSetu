@@ -1,7 +1,7 @@
 import { chromium, devices, type Browser, type BrowserContext, type Page } from "playwright";
 import { mkdirSync } from "fs";
 
-const SHOTS_DIR = process.env.SHOTS_DIR ?? "C:\\Users\\User\\AppData\\Local\\Temp\\opencode\\setuseva-shots";
+const SHOTS_DIR = process.env.SHOTS_DIR ?? "C:\\Users\\User\\AppData\\Local\\Temp\\opencode\\sevasetu-shots";
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:3100";
 
 let failures = 0;

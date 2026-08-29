@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import MockedBadge from "@/components/MockedBadge";
-import { useCopy } from "@/components/LanguageProvider";
+import { useCopy, useLang } from "@/components/LanguageProvider";
 
 interface TranslationResult {
   means: string;
@@ -21,14 +21,87 @@ You are therefore directed to submit the said report, in the prescribed format, 
 
 Be pleased to note that continued non-submission may adversely affect the standing of your organisation and its eligibility for renewals and consequential registrations.`;
 
+const MOCK_SCANNED_NOTICE = `MINISTRY OF CORPORATE AFFAIRS (MCA)
+OFFICE OF THE REGISTRAR OF COMPANIES (ROC), NCT OF DELHI & HARYANA
+4th Floor, IFCI Tower, 61 Nehru Place, New Delhi - 110019
+
+Notice Ref No: ROC/DEL/SEC8/SHOW-CAUSE/2026/48912
+Date: 12th February, 2026
+
+To,
+The Board of Directors,
+Aarohan Foundation (CIN: U85300DL2024NPL399120)
+
+SUBJECT: SHOW CAUSE NOTICE UNDER SECTION 12(8) & SECTION 137 OF THE COMPANIES ACT, 2013 REGARDING NON-FILING OF FINANCIAL STATEMENTS (FORM AOC-4) FOR FY 2024-25.
+
+Sir / Madam,
+
+1. Whereas, upon examination of the MCA21 portal records, it is observed that your organisation (Section-8 non-profit company) has failed to file the mandatory Financial Statements in Form AOC-4 along with Director's Report for the Financial Year ending 31st March, 2025 within the statutory period of 30 days from the date of the Annual General Meeting.
+
+2. You are hereby called upon to show cause within 15 (fifteen) days from the date of receipt of this notice as to why penal action under Section 137(3) of the Companies Act, 2013 and adjudication proceedings under Section 454 should not be initiated against the company and every officer who is in default.
+
+3. Failure to respond or rectify the default through the MCA portal within the stipulated timeline shall lead to compounding penalties and initiation of strike-off proceedings without further reference.
+
+By Order of the Registrar of Companies,
+(Authorized Signatory)
+Registrar of Companies, Delhi`;
+
 type ErrorKind = "empty_text" | "not_configured" | "generic" | null;
 
 export default function NoticeTranslatorPage() {
   const t = useCopy();
+  const { lang } = useLang();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [noticeText, setNoticeText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadedNoticeInfo, setUploadedNoticeInfo] = useState<{
+    filename: string;
+    size: string;
+  } | null>(null);
   const [result, setResult] = useState<TranslationResult | null>(null);
   const [errorKind, setErrorKind] = useState<ErrorKind>(null);
+
+  const performMockUpload = (filename: string, textOverride?: string) => {
+    setUploading(true);
+    setErrorKind(null);
+    setResult(null);
+
+    setTimeout(() => {
+      setNoticeText(textOverride || MOCK_SCANNED_NOTICE);
+      setUploadedNoticeInfo({
+        filename,
+        size: "1.4 MB",
+      });
+      setUploading(false);
+    }, 700);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type === "text/plain" || file.name.endsWith(".txt")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const text = (event.target?.result as string) || "";
+        performMockUpload(file.name, text.trim() || MOCK_SCANNED_NOTICE);
+      };
+      reader.readAsText(file);
+    } else {
+      performMockUpload(file.name);
+    }
+  };
+
+  const handleUploadButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+      fileInputRef.current.click();
+    } else {
+      performMockUpload("Notice_ROC_MCA_2026.pdf");
+    }
+  };
 
   const onTranslate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +140,16 @@ export default function NoticeTranslatorPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-12">
+      {/* Hidden File Input for Real File Upload Selection */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.txt"
+        onChange={handleFileChange}
+        className="hidden"
+        aria-hidden="true"
+      />
+
       <div className="max-w-3xl">
         <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
           {t.translator.headline}
@@ -80,9 +163,34 @@ export default function NoticeTranslatorPage() {
             onSubmit={onTranslate}
             className="rounded-lg border border-mist border-t-2 border-t-bridge bg-white p-5 sm:p-6"
           >
-            <label htmlFor="notice-text" className="block text-base font-semibold text-ink">
-              {t.translator.noticeLabel}
-            </label>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <label htmlFor="notice-text" className="block text-base font-semibold text-ink">
+                {t.translator.noticeLabel}
+              </label>
+
+              {uploadedNoticeInfo && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-status-success-bg px-2.5 py-0.5 font-mono text-xs font-semibold text-status-success border border-status-success/30 animate-in fade-in">
+                  <span>✓</span>
+                  <span>{uploadedNoticeInfo.filename} (OCR Extracted)</span>
+                </span>
+              )}
+            </div>
+
+            {/* OCR Extracting Progress Banner */}
+            {uploading && (
+              <div className="mt-2.5 flex items-center gap-2.5 rounded-md border border-marigold/50 bg-marigold/10 px-3.5 py-2.5 text-xs text-marigold-deep animate-pulse">
+                <svg className="h-4 w-4 animate-spin text-marigold-deep" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+                <span className="font-semibold">
+                  {lang === "hi"
+                    ? "दस्तावेज़ स्कैन और OCR द्वारा टेक्स्ट निकाला जा रहा है…"
+                    : "Scanning document & extracting text via OCR engine…"}
+                </span>
+              </div>
+            )}
+
             <textarea
               id="notice-text"
               value={noticeText}
@@ -90,7 +198,8 @@ export default function NoticeTranslatorPage() {
               placeholder={t.translator.placeholder}
               rows={12}
               maxLength={8000}
-              className="mt-2 w-full rounded-md border border-mist bg-white p-3.5 text-base leading-relaxed text-ink placeholder:text-ink/40"
+              disabled={uploading}
+              className="mt-2 w-full rounded-md border border-mist bg-white p-3.5 text-base leading-relaxed text-ink placeholder:text-ink/40 disabled:bg-paper/50"
             />
             {errorKind === "empty_text" && (
               <p role="alert" className="mt-2 text-sm font-medium text-status-error">
@@ -103,27 +212,58 @@ export default function NoticeTranslatorPage() {
                 type="button"
                 onClick={() => {
                   setNoticeText(EXAMPLE_NOTICE);
+                  setUploadedNoticeInfo(null);
                   setErrorKind(null);
                 }}
-                className="inline-flex min-h-10 items-center rounded-md border border-mist bg-white px-4 py-2 text-sm font-medium text-bridge hover:border-bridge"
+                className="inline-flex min-h-10 items-center rounded-md border border-mist bg-white px-4 py-2 text-sm font-medium text-bridge hover:border-bridge transition-colors"
               >
                 {t.translator.loadExample}
                 <span className="ml-1.5 font-mono text-[10px] uppercase tracking-wider text-ink/50">
                   {t.translator.illustrativeTag}
                 </span>
               </button>
+
               <button
                 type="button"
-                title="Mocked in this prototype — no file is read."
-                className="inline-flex min-h-10 items-center gap-1.5 rounded-md border border-mist bg-white px-4 py-2 text-sm font-medium text-ink/70"
+                onClick={handleUploadButtonClick}
+                disabled={uploading}
+                title="Select a notice document (PDF/Image) to extract text via simulated OCR"
+                className="inline-flex min-h-10 items-center gap-1.5 rounded-md border border-mist bg-white px-4 py-2 text-sm font-medium text-ink hover:border-bridge hover:bg-paper active:translate-y-[1px] transition-all disabled:opacity-50"
               >
-                {t.translator.uploadInstead}
-                <MockedBadge />
+                {uploading ? (
+                  <>
+                    <svg className="h-3.5 w-3.5 animate-spin text-bridge" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    <span>Extracting…</span>
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-4 w-4 text-bridge"
+                      aria-hidden="true"
+                    >
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    <span>{t.translator.uploadInstead}</span>
+                    <MockedBadge />
+                  </>
+                )}
               </button>
+
               <button
                 type="submit"
-                disabled={loading}
-                className="ml-auto inline-flex min-h-11 items-center rounded-md bg-bridge px-6 py-2.5 text-base font-semibold text-white shadow-[0_2px_0_0_#0d3237] enabled:hover:bg-bridge-light enabled:active:translate-y-[1px] enabled:active:shadow-none disabled:cursor-wait disabled:bg-mist disabled:text-ink/50 disabled:shadow-none"
+                disabled={loading || uploading}
+                className="ml-auto inline-flex min-h-11 items-center rounded-md bg-bridge px-6 py-2.5 text-base font-semibold text-white shadow-[0_2px_0_0_#0d3237] enabled:hover:bg-bridge-light enabled:active:translate-y-[1px] enabled:active:shadow-none disabled:cursor-wait disabled:bg-mist disabled:text-ink/50 disabled:shadow-none transition-all"
               >
                 {loading ? t.translator.translating : t.translator.translate}
               </button>

@@ -11,17 +11,26 @@ import "./globals.css";
 const plexSans = IBM_Plex_Sans({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
+  display: "swap",
   variable: "--font-plex-sans",
 });
 
 const plexMono = IBM_Plex_Mono({
   weight: ["400", "500", "600"],
   subsets: ["latin"],
+  display: "swap",
   variable: "--font-plex-mono",
 });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#0F3D3E",
+};
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://setuseva.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://sevasetu.vercel.app"),
   title: {
     default: "SevaSetu: NGO registration in plain English",
     template: "%s | SevaSetu",
@@ -44,21 +53,25 @@ export const metadata: Metadata = {
   },
 };
 
+import { AuthProvider } from "@/components/AuthProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${plexSans.variable} ${plexMono.variable}`}>
-      <body suppressHydrationWarning className="flex min-h-screen flex-col font-sans">
+    <html lang="en" data-scroll-behavior="smooth" className={`${plexSans.variable} ${plexMono.variable} overflow-x-hidden max-w-[100vw]`}>
+      <body suppressHydrationWarning className="flex min-h-screen flex-col font-sans overflow-x-hidden max-w-[100vw] w-full">
         <ThemeProvider>
-          <ProfileProvider>
-            <LanguageProvider>
-              <Header />
-              <PhaseBanner />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </LanguageProvider>
-          </ProfileProvider>
+          <AuthProvider>
+            <ProfileProvider>
+              <LanguageProvider>
+                <Header />
+                <PhaseBanner />
+                <main className="flex-1 w-full max-w-[100vw] overflow-x-hidden">{children}</main>
+                <Footer />
+              </LanguageProvider>
+            </ProfileProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

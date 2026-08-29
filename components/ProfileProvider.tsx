@@ -11,18 +11,21 @@ import {
 } from "react";
 import { buildRoadmap } from "@/lib/roadmap";
 import { deriveProfile, hasPendingApprovals } from "@/lib/progress";
-import type { IntakeAnswers, NgoProfile } from "@/lib/types";
+import type { IntakeAnswers, NgoProfile, CaReviewSubmission } from "@/lib/types";
 
 interface ProfileContextValue {
   profile: NgoProfile | null;
   saveProfile: (answers: IntakeAnswers) => void;
   setUpload: (stepId: string, index: number, uploaded: boolean) => void;
+  setAllUploads: (stepId: string, count: number, uploaded: boolean) => void;
   submitStep: (stepId: string) => void;
+  submitCaReview: (review: CaReviewSubmission) => void;
+  cancelCaReview: () => void;
   seedDemo: (answers: IntakeAnswers, demoSubmittedAt: Record<string, number>) => void;
   resetProfile: () => void;
 }
 
-const STORAGE_KEY = "setuseva-profile-v1";
+const STORAGE_KEY = "sevasetu-profile-v1";
 
 let currentProfile: NgoProfile | null = null;
 const listeners = new Set<() => void>();
@@ -47,6 +50,7 @@ function normalize(parsed: Partial<NgoProfile> | null): NgoProfile | null {
     roadmap: parsed.roadmap,
     uploads: parsed.uploads ?? {},
     submittedAt: parsed.submittedAt ?? {},
+    caReview: parsed.caReview ?? null,
   };
 }
 
@@ -81,6 +85,7 @@ const ProfileContext = createContext<ProfileContextValue>({
   profile: null,
   saveProfile: () => {},
   setUpload: () => {},
+  setAllUploads: () => {},
   submitStep: () => {},
   seedDemo: () => {},
   resetProfile: () => {},
@@ -161,6 +166,25 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     [mutateProfile]
   );
 
+  const setAllUploads = useCallback(
+    (stepId: string, count: number, uploaded: boolean) => {
+      mutateProfile((draft) => {
+        const flags = Array(count).fill(uploaded);
+        const steps = draft.roadmap.steps.map((step) =>
+          step.id === stepId && step.status === "not-started" && uploaded
+            ? { ...step, status: "in-progress" as const }
+            : step
+        );
+        return {
+          ...draft,
+          uploads: { ...draft.uploads, [stepId]: flags },
+          roadmap: { ...draft.roadmap, steps },
+        };
+      });
+    },
+    [mutateProfile]
+  );
+
   const submitStep = useCallback(
     (stepId: string) => {
       mutateProfile((draft) => ({
@@ -177,14 +201,51 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     [mutateProfile]
   );
 
+  const submitCaReview = useCallback(
+    (caReview: CaReviewSubmission) => {
+      mutateProfile((draft) => ({
+        ...draft,
+        caReview,
+      }));
+    },
+    [mutateProfile]
+  );
+
+  const cancelCaReview = useCallback(() => {
+    mutateProfile((draft) => ({
+      ...draft,
+      caReview: null,
+    }));
+  }, [mutateProfile]);
+
   const derivedProfile = useMemo(
     () => (profile ? deriveProfile(profile, now) : null),
     [profile, now]
   );
 
   const value = useMemo(
-    () => ({ profile: derivedProfile, saveProfile, setUpload, submitStep, seedDemo, resetProfile }),
-    [derivedProfile, saveProfile, setUpload, submitStep, seedDemo, resetProfile]
+    () => ({
+      profile: derivedProfile,
+      saveProfile,
+      setUpload,
+      setAllUploads,
+      submitStep,
+      submitCaReview,
+      cancelCaReview,
+      seedDemo,
+      resetProfile,
+    }),
+    [
+      derivedProfile,
+      saveProfile,
+      setUpload,
+      setAllUploads,
+      submitStep,
+      submitCaReview,
+      cancelCaReview,
+      seedDemo,
+      resetProfile,
+    ]
   );
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
