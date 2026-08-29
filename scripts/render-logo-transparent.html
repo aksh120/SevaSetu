@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1024px;
+      height: 1024px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bridge-svg {
+      width: 800px;
+      height: 800px;
+      filter: drop-shadow(0 16px 32px rgba(20, 70, 77, 0.45));
+    }
+  </style>
+</head>
+<body>
+  <svg class="bridge-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FDE68A" />
+        <stop offset="30%" stop-color="#F59E0B" />
+        <stop offset="70%" stop-color="#D97706" />
+        <stop offset="100%" stop-color="#B45309" />
+      </linearGradient>
+      <linearGradient id="cableGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FDE68A" stop-opacity="0.8" />
+        <stop offset="50%" stop-color="#F59E0B" stop-opacity="0.95" />
+        <stop offset="100%" stop-color="#FDE68A" stop-opacity="0.8" />
+      </linearGradient>
+    </defs>
+    <path d="M4 25.5h24" stroke="url(#goldGrad)" stroke-width="2.4" stroke-linecap="round" />
+    <path d="M9 25.5V11.5M16 25.5V8M23 25.5V11.5" stroke="url(#goldGrad)" stroke-width="2.3" stroke-linecap="round" />
+    <path d="M6.5 11.5h5M13.5 8h5M20.5 11.5h5" stroke="url(#goldGrad)" stroke-width="1.4" stroke-linecap="round" />
+    <path d="M9 11.5c2.3 3.5 4.6 5.2 7 5.2s4.7-1.7 7-5.2" stroke="url(#cableGrad)" stroke-width="1.2" stroke-linecap="round" opacity="0.85" />
+  </svg>
+</body>
+</html>
