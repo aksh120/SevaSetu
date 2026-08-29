@@ -87,6 +87,8 @@ const ProfileContext = createContext<ProfileContextValue>({
   setUpload: () => {},
   setAllUploads: () => {},
   submitStep: () => {},
+  submitCaReview: () => {},
+  cancelCaReview: () => {},
   seedDemo: () => {},
   resetProfile: () => {},
 });
