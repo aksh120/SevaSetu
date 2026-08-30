@@ -202,7 +202,7 @@ const en = {
         { title: "Read live by AI", body: "An open model reads your text server-side. Nothing is stored." },
         { title: "Three-part answer", body: "Meaning, next action, deadline. Nothing else." },
       ],
-      privacyNote: "Served by Groq, which never trains on your data.",
+      privacyNote: "Model used 'GPT-OSS-120B' by OpenAI, Served by Groq, which never trains on your data.",
     },
   },
   about: {
