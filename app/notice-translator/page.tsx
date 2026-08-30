@@ -359,10 +359,11 @@ export default function NoticeTranslatorPage() {
                 </li>
               ))}
             </ol>
-            <p className="mt-4 border-t border-mist pt-3 text-xs leading-relaxed text-ink/55">
+            <p className="mt-4 border-t border-mist pt-3 text-s leading-relaxed text-ink/80">
               {t.translator.side.privacyNote}
             </p>
           </section>
+          
         </div>
       </div>
     </div>
